@@ -1,5 +1,3 @@
-# **3) Model Selection**
-
 import pandas as pd
 import numpy as np
 
@@ -9,7 +7,6 @@ from sklearn.mixture import GaussianMixture
 # ============================================================
 # 1. LOAD DATA
 # ============================================================
-
 filename = "Return.dat" #
 
 df = pd.read_csv(filename)
@@ -41,7 +38,6 @@ print(f"Std:  {np.std(returns, ddof=1):.6f}")
 # ============================================================
 # 2. NORMAL DISTRIBUTION
 # ============================================================
-
 mu_normal = np.mean(returns)
 sigma_normal = np.std(returns, ddof=1)
 
@@ -55,7 +51,6 @@ bic_normal = k_normal * np.log(n) - 2 * loglik_normal
 # ============================================================
 # 3. t-DISTRIBUTION
 # ============================================================
-
 df_t, loc_t, scale_t = t.fit(returns)
 
 loglik_t = np.sum(t.logpdf(returns, df_t, loc=loc_t, scale=scale_t))
@@ -68,7 +63,6 @@ bic_t = k_t * np.log(n) - 2 * loglik_t
 # ============================================================
 # 4. GMM-2
 # ============================================================
-
 gmm2 = GaussianMixture(
     n_components=2,
     covariance_type="full",
@@ -98,7 +92,6 @@ stds = stds[order]
 # ============================================================
 # 5. OUTPUT RESULTS
 # ============================================================
-
 results = pd.DataFrame({
     "Model": ["Normal", "t-distribution", "GMM-2"],
     "Parameters": [k_normal, k_t, k_gmm2],
@@ -133,7 +126,6 @@ for i in range(2):
 # ============================================================
 # 6. SAVE TO CSV
 # ============================================================
-
 results.to_csv("aic_bic_model_comparison.csv", index=False)
 
 print("\nSaved:")
