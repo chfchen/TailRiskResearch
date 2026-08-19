@@ -1,5 +1,3 @@
-# **5) Rolling VaR**
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,8 +8,6 @@ from scipy.stats import norm, t
 # =========================
 # IMPORTANT:
 # Rolling-window analysis needs chronological order.
-# If your file is ordered from lowest to highest, DO NOT use that file.
-# Use original date-order return data instead.
 
 filename = "Return.dat"
 df = pd.read_csv(filename)
