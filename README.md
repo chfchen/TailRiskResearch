@@ -1,24 +1,17 @@
 # S&P 500 Tail-Risk Analysis: From Static Distributions to Dynamic Forecasting
 
-This repository contains a continuing research project on **downside tail risk in the S&P 500**, progressing from static distribution-based risk modeling to dynamic, time-varying risk forecasting.
+This repository contains a continuing research project on **downside tail risk in the S&P 500**, progressing from static distribution-based risk modeling to dynamic, time-varying risk forecasting. The overall objective is to investigate how accurately statistical models measure and forecast extreme downside risk in the U.S. equity market.
 
 The research is organized around two studies:
 
-1. **Static Tail-Risk Modeling:** *Beyond Normality: Comparative Tail-Risk Analysis of S&P 500 Returns*
-   publication: https://jhss.scholasticahq.com/article/162826-beyond-normality-comparative-tail-risk-analysis-of-s-p-500-returns
-3. **Dynamic Tail-Risk Forecasting:** a follow-up study comparing Historical Simulation, GARCH, GJR-GARCH, and Quantile Regression for one-day-ahead Value at Risk (VaR) forecasting.
+1. **Static Tail-Risk Modeling:**
+   
+   Scientific question: Which statistical distributions best represent S&P 500 downside tail risk?
 
-## Objectives
+   Publication: https://jhss.scholasticahq.com/article/162826-beyond-normality-comparative-tail-risk-analysis-of-s-p-500-returns
+2. **Dynamic Tail-Risk Forecasting:**
 
-The overall objective is to investigate how accurately statistical models measure and forecast extreme downside risk in the U.S. equity market.
-
-The first study examines whether the commonly used normal distribution adequately represents S&P 500 returns and compares it with alternative heavy-tailed models.
-
-The follow-up study extends this research by asking a different question:
-
-> **Can models that account for time-varying volatility and changing market conditions provide more accurate dynamic tail-risk forecasts?**
-
-Together, the studies examine the progression from **static risk estimation** to **dynamic risk forecasting**.
+    Scientific question: How does tail risk change over time, and can conditional-volatility models forecast those changes more accurately? 
 
 ## Data Source
 
@@ -28,8 +21,6 @@ The analyses use the **SPDR S&P 500 ETF Trust (SPY)** as a proxy for the S&P 500
 * **Data:** Daily adjusted closing prices
 * **Primary sample:** January 1996 – December 2025
 * **Return measure:** Daily logarithmic returns
-
-Using the same underlying market and return series allows the static and dynamic studies to be compared within a consistent framework.
 
 ## Methods
 
@@ -108,52 +99,7 @@ The study further investigates whether improvements in statistical VaR calibrati
 
 ## Limitations and Potential Biases
 
-Several limitations should be considered when interpreting the results.
+This research focuses exclusively on SPY as a proxy for the S&P 500, so the findings may not fully generalize to individual stocks, international markets, or other asset classes. The results also depend on historical data and on modeling choices such as estimation-window length, confidence level, distributional assumptions, and model specification. Because financial markets evolve over time, structural changes, volatility regime shifts, and rare extreme events may reduce the ability of historical relationships to represent future risk.
 
-### Market Scope
+The analysis was designed to avoid look-ahead bias by using only information available before each forecast date. However, researcher choices regarding model selection, parameter settings, evaluation periods, and performance metrics can still introduce selection bias. In addition, passing or failing a statistical backtest does not by itself prove that a model accurately represents the true market-risk process, particularly because extreme tail events are relatively rare and therefore provide limited observations for evaluation.
 
-The analysis focuses exclusively on **SPY and the U.S. large-cap equity market**. Results may not generalize to individual stocks, international equity markets, bonds, commodities, cryptocurrencies, or other asset classes.
-
-### Historical Dependence
-
-All models are estimated from historical market data. Structural changes in market behavior may therefore reduce the ability of past relationships to represent future conditions.
-
-### Model Risk
-
-Each model imposes different assumptions. Normal and Student's t models assume particular distributional forms, while GARCH-family models impose specific structures on conditional volatility. Results may therefore depend partly on model specification rather than the underlying market process alone.
-
-### Window Selection
-
-Rolling-window results depend on the selected estimation-window length. A shorter window may respond more rapidly to changing conditions but contain less information, while a longer window may provide more stable estimates but respond more slowly to regime changes.
-
-### Extreme Events
-
-Rare events provide relatively few observations for statistical evaluation. Conclusions regarding very deep tail risk are therefore inherently less certain than conclusions about more common market behavior.
-
-### Backtesting Limitations
-
-Passing a statistical backtest does not prove that a model accurately represents the true underlying risk process. Similarly, failure of a particular backtest does not necessarily mean that a model has no practical value.
-
-### Look-Ahead and Researcher Bias
-
-Dynamic forecasts are designed to use only information available before each forecast date to avoid look-ahead bias. However, model selection, window lengths, confidence levels, and evaluation metrics are research design choices and may introduce researcher-selection bias.
-
-## Research Progression
-
-The two studies represent a progression in the central research question:
-
-**Static modeling**
-
-> Which statistical distributions best represent S&P 500 downside tail risk?
-
-↓
-
-**Dynamic forecasting**
-
-> How does tail risk change over time, and can conditional-volatility models forecast those changes more accurately?
-
-This progression reflects a broader objective of moving from describing historical return distributions toward understanding and forecasting financial risk under changing market conditions.
-
-## Disclaimer
-
-This repository is intended for **academic and educational research purposes only**. The analyses, models, and results presented here should not be interpreted as investment advice or recommendations to buy or sell any financial asset.
