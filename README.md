@@ -8,10 +8,12 @@ The research is organized around two studies:
    
    Scientific question: Which statistical distributions best represent S&P 500 downside tail risk?
 
-   Publication: https://jhss.scholasticahq.com/article/162826-beyond-normality-comparative-tail-risk-analysis-of-s-p-500-returns
+   Publication: Beyond Normality: Comparative Tail-Risk Analysis of S&P 500 Returns (https://jhss.scholasticahq.com/article/162826-beyond-normality-comparative-tail-risk-analysis-of-s-p-500-returns)
 2. **Dynamic Tail-Risk Forecasting:**
 
-    Scientific question: How does tail risk change over time, and can conditional-volatility models forecast those changes more accurately? 
+   Scientific question: Which statistical and machine-learning approaches provide the most accurate and reliable dynamic Value-at-Risk forecasts for the S&P 500 across changing market conditions?
+
+   Publication: Dynamic Value-at-Risk Forecasting for the S&P 500: A Comparison of Statistical and Machine Learning Approaches (Pending)
 
 ## Data Source
 
