@@ -1,17 +1,11 @@
 """
 Dynamic VaR analysis for SPY
 Data file: SPYLogReturn.dat
-Required columns: Date, Return
-Date range: 01/02/1996 to 12/31/2025
 
 Models:
 1. 250-day Historical VaR
 2. GARCH(1,1)-Student-t VaR
 3. GJR-GARCH(1,1)-Student-t VaR
-
-VaR convention:
-VaR is reported as a positive loss percentage.
-For example, VaR = 3.0 means a predicted 3.0% one-day loss threshold.
 """
 
 from pathlib import Path
@@ -22,11 +16,9 @@ import pandas as pd
 from arch import arch_model
 from scipy.stats import t as student_t
 
-
 # ============================================================
 # 1. USER SETTINGS
 # ============================================================
-
 DATA_FILE = Path("SPYLogReturn.dat")
 HISTORICAL_WINDOW = 250
 # Main confidence level
@@ -36,6 +28,7 @@ TAIL_PROBABILITY = 1.0 - CONFIDENCE_LEVEL  # 0.01 for 99% VaR
 OUTPUT_CSV = Path("SPY_Dynamic_VaR_Results.csv")
 OUTPUT_EXCEL = Path("SPY_Dynamic_VaR_Results.xlsx")
 OUTPUT_FIGURE = Path("SPY_Dynamic_99pct_VaR.png")
+
 # ============================================================
 # 2. READ AND CLEAN THE DATA
 # ============================================================
@@ -99,14 +92,6 @@ print(f"Daily volatility:    {df['ReturnPct'].std(ddof=1):.4f}%")
 # ============================================================
 # 3. 250-DAY HISTORICAL VaR
 # ============================================================
-
-# Important:
-# shift(1) ensures that the VaR assigned to date t uses only the
-# previous 250 returns, not the return observed on date t.
-#
-# Rolling.quantile(0.01) estimates the first percentile of the
-# previous 250 daily returns.
-
 historical_return_quantile = (
     df["ReturnPct"]
     .shift(1)
@@ -116,16 +101,11 @@ historical_return_quantile = (
     )
     .quantile(TAIL_PROBABILITY)
 )
-
-# Convert the negative return quantile into positive-loss VaR.
 df["Historical_VaR_99"] = -historical_return_quantile
-
-
 
 # ============================================================
 # 4. FUNCTION TO ESTIMATE STUDENT-t GARCH VaR
 # ============================================================
-
 def estimate_student_t_garch_var(
     returns_pct: pd.Series,
     asymmetric: bool
@@ -196,16 +176,7 @@ def estimate_student_t_garch_var(
         raise ValueError(
             "Estimated Student-t degrees of freedom must exceed 2 "
             "for the variance to exist."
-        )
-
-    # scipy.stats.t is not standardized to unit variance.
-    #
-    # A Student-t variable with nu degrees of freedom has variance:
-    # nu / (nu - 2)
-    #
-    # Multiplying by sqrt((nu - 2) / nu) creates the unit-variance
-    # standardized Student-t distribution used by the arch model.
-
+        )   
     standardized_t_quantile = (
         student_t.ppf(
             TAIL_PROBABILITY,
@@ -238,10 +209,10 @@ def estimate_student_t_garch_var(
         conditional_volatility,
         conditional_var
     )
+    
 # ============================================================
 # 5. STANDARD GARCH(1,1)-STUDENT-t
 # ============================================================
-
 garch_result, garch_volatility, garch_var = (
     estimate_student_t_garch_var(
         returns_pct=df["ReturnPct"],
@@ -252,11 +223,9 @@ garch_result, garch_volatility, garch_var = (
 df["GARCH_t_Volatility"] = garch_volatility
 df["GARCH_t_VaR_99"] = garch_var
 
-
 # ============================================================
 # 6. GJR-GARCH(1,1)-STUDENT-t
 # ============================================================
-
 gjr_result, gjr_volatility, gjr_var = (
     estimate_student_t_garch_var(
         returns_pct=df["ReturnPct"],
@@ -267,18 +236,9 @@ gjr_result, gjr_volatility, gjr_var = (
 df["GJR_GARCH_t_Volatility"] = gjr_volatility
 df["GJR_GARCH_t_VaR_99"] = gjr_var
 
-
 # ============================================================
 # 7. IDENTIFY VaR VIOLATIONS
 # ============================================================
-
-# A violation occurs when the actual daily loss is greater than VaR.
-#
-# Example:
-# Actual return = -4%
-# Predicted VaR = 3%
-# Since 4% actual loss > 3% VaR, this is a violation.
-
 df["ActualLossPct"] = -df["ReturnPct"]
 
 df["Historical_Violation"] = (
@@ -299,11 +259,9 @@ df.loc[
     "Historical_Violation"
 ] = np.nan
 
-
 # ============================================================
 # 8. PRINT MODEL RESULTS
 # ============================================================
-
 print("\n\nSTANDARD GARCH(1,1)-STUDENT-t")
 print("=" * 70)
 print(garch_result.summary())
@@ -312,11 +270,9 @@ print("\n\nGJR-GARCH(1,1)-STUDENT-t")
 print("=" * 70)
 print(gjr_result.summary())
 
-
 # ============================================================
 # 9. EXTRACT IMPORTANT MODEL PARAMETERS
 # ============================================================
-
 def safely_get_parameter(parameters, possible_names):
     """Return the first available parameter among possible names."""
 
@@ -325,7 +281,6 @@ def safely_get_parameter(parameters, possible_names):
             return float(parameters[name])
 
     return np.nan
-
 
 garch_alpha = safely_get_parameter(
     garch_result.params,
@@ -353,11 +308,6 @@ gjr_beta = safely_get_parameter(
     gjr_result.params,
     ["beta[1]"]
 )
-
-# For GJR-GARCH, a commonly reported average-shock persistence
-# measure under approximately symmetric innovations is:
-#
-# alpha + beta + gamma/2
 
 gjr_persistence = (
     gjr_alpha
@@ -405,16 +355,13 @@ parameter_table = pd.DataFrame(
         ]
     }
 )
-
 print("\n\nMODEL PARAMETER COMPARISON")
 print("=" * 70)
 print(parameter_table.to_string(index=False))
 
-
 # ============================================================
 # 10. SIMPLE VaR SUMMARY
 # ============================================================
-
 def create_var_summary(
     data: pd.DataFrame,
     var_column: str,
@@ -444,7 +391,6 @@ def create_var_summary(
         "Expected violation rate": TAIL_PROBABILITY
     }
 
-
 var_summary = pd.DataFrame(
     [
         create_var_summary(
@@ -472,11 +418,9 @@ print("\n\nVaR SUMMARY")
 print("=" * 70)
 print(var_summary.to_string(index=False))
 
-
 # ============================================================
 # 11. SAVE RESULTS
 # ============================================================
-
 output_columns = [
     "Date",
     "Return",
@@ -524,11 +468,9 @@ with pd.ExcelWriter(
 print(f"\nSaved daily results to: {OUTPUT_CSV.resolve()}")
 print(f"Saved Excel workbook to: {OUTPUT_EXCEL.resolve()}")
 
-
 # ============================================================
 # 12. CREATE THE MAIN FIGURE
 # ============================================================
-
 plot_df = df.dropna(
     subset=[
         "Historical_VaR_99",
