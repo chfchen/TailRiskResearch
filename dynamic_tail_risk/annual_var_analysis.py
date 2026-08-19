@@ -1,5 +1,3 @@
-# **4) VaR Annual**
-
 import pandas as pd
 import numpy as np
 from scipy.stats import norm, t, skew, kurtosis
