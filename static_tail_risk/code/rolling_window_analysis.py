@@ -6,10 +6,6 @@ from scipy.stats import norm, t
 # =========================
 # 1. Load data
 # =========================
-# IMPORTANT:
-# Rolling-window analysis needs chronological order.
-# If your file is ordered from lowest to highest, DO NOT use that file.
-# Use original date-order return data instead.
 
 filename = "Return-NoSort.dat"
 df = pd.read_csv(filename)
