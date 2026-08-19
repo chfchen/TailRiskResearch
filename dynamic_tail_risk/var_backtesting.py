@@ -4,25 +4,16 @@ VaR backtesting:
 2. Christoffersen independence test
 3. Christoffersen conditional-coverage test
 4. Quantile loss
-
-VaR columns must contain positive loss values.
-Example:
-    ReturnPct = -3.00
-    VaR = 2.50
-This is a violation because -3.00 < -2.50.
 """
 
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 from scipy.stats import chi2
 
-
 # ============================================================
 # 1. SETTINGS
 # ============================================================
-
 INPUT_FILE = Path("VaR1250.csv")
 DATE_COLUMN = "Date"
 RETURN_COLUMN = "Return"
@@ -39,7 +30,6 @@ OUTPUT_FILE = Path("VaR_Backtest_Results.xlsx")
 # ============================================================
 # 2. READ AND CLEAN DATA
 # ============================================================
-
 if not INPUT_FILE.exists():
     raise FileNotFoundError(
         f"Could not find: {INPUT_FILE.resolve()}"
@@ -95,8 +85,6 @@ df = (
       .reset_index(drop=True)
 )
 
-# Use one common evaluation period for all three models.
-# The first 250 Rolling values are expected to be missing.
 common_df = df.dropna(
     subset=[
         RETURN_COLUMN,
@@ -109,11 +97,9 @@ print("Common backtest observations:", len(common_df))
 print("First common date:", common_df[DATE_COLUMN].min())
 print("Last common date:", common_df[DATE_COLUMN].max())
 
-
 # ============================================================
 # 3. SUPPORTING FUNCTIONS
 # ============================================================
-
 def xlogy(count: int, probability: float) -> float:
     """
     Calculate count * log(probability), treating 0*log(0) as zero.
@@ -295,11 +281,9 @@ def quantile_loss(
 
     return losses
 
-
 # ============================================================
 # 4. RUN TESTS FOR EACH MODEL
 # ============================================================
-
 summary_rows = []
 daily_output = df[[DATE_COLUMN, RETURN_COLUMN]].copy()
 
@@ -412,11 +396,9 @@ for model_name, var_column in VAR_COLUMNS.items():
         f"{model_name} Quantile Loss"
     ] = qloss
 
-
 # ============================================================
 # 5. CREATE RESULTS TABLE
 # ============================================================
-
 results = pd.DataFrame(summary_rows)
 
 results["Quantile-loss rank"] = (
@@ -461,11 +443,9 @@ print(
     )
 )
 
-
 # ============================================================
 # 6. EXPORT TO EXCEL
 # ============================================================
-
 with pd.ExcelWriter(
     OUTPUT_FILE,
     engine="openpyxl"
