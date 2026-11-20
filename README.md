@@ -13,7 +13,7 @@ The research is organized around two studies:
 
    Scientific question: Which statistical and machine-learning approaches provide the most accurate and reliable dynamic Value-at-Risk forecasts for the S&P 500 across changing market conditions?
 
-   Publication: Dynamic Value-at-Risk Forecasting for the S&P 500: A Comparison of Statistical and Machine Learning Approaches (Pending)
+   Publication: Dynamic Value-at-Risk Forecasting for the S&P 500: A Comparison of Statistical and Machine Learning Approaches (Under review)
 
 ## Data Source
 
@@ -98,6 +98,12 @@ The follow-up research investigates this limitation directly by allowing risk fo
 Preliminary analysis indicates that conditional-volatility models can respond more effectively to volatility clustering than static distribution-based approaches. The comparison between GARCH and GJR-GARCH also examines whether accounting for the asymmetric response of volatility to positive and negative market shocks improves downside-risk forecasting.
 
 The study further investigates whether improvements in statistical VaR calibration remain consistent across calm, volatile, and crisis market environments.
+* No single model performs best under every measure or condition.
+* However, GJR provides the strongest overall balance across coverage, violation clustering, quantile accuracy, volatility regimes, market direction, and major stress periods. Its relative advantage also persists broadly from in-sample analysis to one-day-ahead OOS forecasting, suggesting greater robustness across evaluation settings. This stronger performance may reflect its combination of dynamic volatility updating and asymmetric responses to negative shocks.
+* Historical Simulation (HS) is more sensitive to changes in market conditions and forecast-window design. Because its VaR estimate is based on the empirical lower tail of a rolling historical window, it adjusts slowly when volatility rises rapidly and can remain elevated after volatility declines. These effects are especially apparent during stress periods and in the OOS analysis, where the longer rolling window further slows adjustment. 
+* The results also show that higher-volatility conditions are generally associated with weaker coverage and higher quantile loss, emphasizing that VaR estimation becomes more difficult during turbulent markets. Market direction also affects model performance, although its effects differ across models and evaluation measures. 
+* Together, these findings highlight an important distinction between performance and reliability: a VaR model should be evaluated not only by how well it performs overall, but also by how consistently it maintains its performance and relative advantages across changing market conditions.
+
 
 ## Limitations and Potential Biases
 
